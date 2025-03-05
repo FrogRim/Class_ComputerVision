@@ -44,7 +44,7 @@ cv.destroyAllWindows()
 4. Q키를 누르면 영상창이 종료
 
 ### 결과
-
+![Image](https://github.com/user-attachments/assets/abce71a1-b58f-4663-b0aa-5776753597e6)
 ### 코드
 ```python
 import cv2 as cv
@@ -80,7 +80,7 @@ while True:
     combined_frame = np.hstack((frame, edges_3channel))
     
     # 결과 출력
-    cv.imshow('원본 및 에지 검출', combined_frame)
+    cv.imshow('Combined_frame2edges', combined_frame)
     
     # q 키를 누르면 종료
     if cv.waitKey(1) & 0xFF == ord('q'):
