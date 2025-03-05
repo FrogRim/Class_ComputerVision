@@ -6,6 +6,8 @@
 4. 결과 출력및 아무거나 클릭시 창이 닫히게하기
 
 ### 결과
+![Image](https://github.com/user-attachments/assets/50b7ae46-e5b8-48b4-811a-2916574e25cc)
+
 
 ## L01_2. 웹캡 영상에서 에지 검출
 ### 단계
@@ -24,3 +26,4 @@
 4. R키를 누르면 영역 선택 리셋, S키를 누르면 선택한 영역을 이미지로 저장
 
 ### 결과
+![Image](https://github.com/user-attachments/assets/6ffba2fb-2d10-4f83-887e-cdb2584a9399)
