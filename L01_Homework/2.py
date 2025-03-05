@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 
 # 웹캠 열기
-cap = cv.VideoCapture(0) # 0은 기본 웹캠
+cap = cv.VideoCapture(0)  # 0은 기본 웹캠
 
 # 웹캠이 제대로 열렸는지 확인
 if not cap.isOpened():
@@ -31,7 +31,7 @@ while True:
     combined_frame = np.hstack((frame, edges_3channel))
     
     # 결과 출력
-    cv.imshow('원본 및 에지 검출', combined_frame)
+    cv.imshow('Combined_frame2edges', combined_frame)
     
     # q 키를 누르면 종료
     if cv.waitKey(1) & 0xFF == ord('q'):
