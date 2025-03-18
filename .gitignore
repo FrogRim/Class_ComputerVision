@@ -1,0 +1,75 @@
+# Byte-compiled / compiled Python files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+*.hypothesis/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+shadow/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Virtual environments (common names)
+cv/
+venv/
+.venv/
+env.bak/
+venv.bak/
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+
+# Spyder
+.spyderproject
+.spyproject
+
+# Sublime
+*.sublime-project
+*.sublime-workspace
+
+# Eclipse
+.project
+.pydevproject
+
+# Mac OS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
