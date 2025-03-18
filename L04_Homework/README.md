@@ -143,7 +143,7 @@ height, width = image.shape[:2]
  
 center = (width/ 2, height / 2) # 회전 축 좌표정의 
 angle = 45  # 45도 회전 
-scale = 1  # 1.5배 확대 
+scale = 1.5  # 1.5배 확대 
  
 # 회전 변환 행렬 생성 
 rotation_matrix = cv.getRotationMatrix2D(center, angle, scale) 
@@ -170,3 +170,4 @@ cv.destroyAllWindows()
 ![Image](https://github.com/user-attachments/assets/a976f64f-4d17-4a5e-b071-46d7dd876c07)
  ### 확대된 이미지
 ![Image](https://github.com/user-attachments/assets/bbe7b98f-8e16-428d-96bb-837367d7d26c)
+(출력이미지 크기도 1.5배 해놓았기에 원본과 크기차이가 없어보입니다.)
