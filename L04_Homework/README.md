@@ -166,4 +166,7 @@ cv.destroyAllWindows()
   - **cv.INTER_LINEAR** 플래그를 사용하여 양선형 보간법을 적용합니다. 이는 회전이나 크기 조정 시 발생하는 픽셀 간 불일치를 부드럽게 처리하여 더 자연스러운 결과를 제공합니다.
 
  ## 결과
+ ###원본
+![Image](https://github.com/user-attachments/assets/a976f64f-4d17-4a5e-b071-46d7dd876c07)
+ ###확대된 이미지
  ![Image](https://github.com/user-attachments/assets/6faed56c-020a-4d06-94a7-ed030f3508b5)
