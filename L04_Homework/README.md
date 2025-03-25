@@ -130,7 +130,7 @@ cv.destroyAllWindows()
 
   ## 결과
 ![Image](https://github.com/user-attachments/assets/a4c642ba-3655-4f0a-a036-427a72a47185)
-
+(좌측부터 **원본**, **침식**, **팽창**, **열림**, **닫힘** 이미지 입니다.)
 
 
 ## 3. 기하 연산 및 선형 보간 적용하기
