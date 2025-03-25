@@ -11,7 +11,7 @@
 6. Matplotlib을 이용해 원본 이미지와 에지 강도 이미지를 시각화합니다.
 
 ### 결과
-![Image](https://github.com/user-attachments/assets/placeholder-image-for-sobel.jpg)
+![Image](https://github.com/user-attachments/assets/2b979aed-6709-4bc2-a777-1370f596fc1d)
 
 ### 코드
 ```Python
@@ -74,7 +74,7 @@ plt.show()
 5. Matplotlib으로 원본 이미지와 직선이 그려진 이미지를 비교 시각화합니다.
 
 ### 결과
-![Image](https://github.com/user-attachments/assets/placeholder-image-for-hough.jpg)
+![Image](https://github.com/user-attachments/assets/649afe76-8d00-4d4f-950f-2f610b847a37)
 
 ### 코드
 ```Python
@@ -139,7 +139,7 @@ plt.show()
 6. 전경 분리 결과 이미지를 원본과 함께 시각화합니다.
 
 ### 결과
-![Image](https://github.com/user-attachments/assets/placeholder-image-for-grabcut.jpg)
+![Image](https://github.com/user-attachments/assets/61c5950d-1e32-4364-859c-6b65d6ccdbc7)
 
 ### 코드
 ```Python
