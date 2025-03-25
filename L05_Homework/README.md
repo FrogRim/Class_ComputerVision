@@ -139,7 +139,7 @@ plt.show()
 6. 전경 분리 결과 이미지를 원본과 함께 시각화합니다.
 
 ### 결과
-![Image](https://github.com/user-attachments/assets/61c5950d-1e32-4364-859c-6b65d6ccdbc7)
+![Image](https://github.com/user-attachments/assets/3d009bb2-2597-4a96-a391-250b32e76df2)
 
 ### 코드
 ```Python
