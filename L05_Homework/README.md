@@ -30,7 +30,7 @@ if image is None:
 # 그레이스케일로 변환
 gray_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
 
-# 소벨 연산자(상하,좌우 화소에 가중치 부여, 에지강도와 방향때문에 자료형은 32비트 실수형인 cv.CV_32F)
+# 소벨 연산자(상하,좌우 화소에 가중치 부여, 에지강도와 방향때문에 자료형은 64비트 실수형인 cv.CV_64F)
 gray_x = cv.Sobel(gray_image,cv.CV_64F,1,0,ksize=3)
 gray_y = cv.Sobel(gray_image,cv.CV_64F,0,1,ksize=3)
 
