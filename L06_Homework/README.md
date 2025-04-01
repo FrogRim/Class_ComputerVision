@@ -1,7 +1,5 @@
 # Computer Vision - L06 Homework
 
-## 개요
-이 디렉터리는 컴퓨터 비전 수업의 레슨 06 (Local Features) 숙제 솔루션을 포함하고 있습니다. 본 과제는 SIFT(Scale-Invariant Feature Transform) 알고리즘을 사용하여 이미지 특징점 검출, 매칭 및 호모그래피를 활용한 이미지 정합과 관련된 내용을 다룹니다.
 
 ## 파일 구조
 - `1.py`: SIFT 특징점 검출 및 시각화
