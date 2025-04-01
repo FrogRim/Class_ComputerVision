@@ -22,6 +22,8 @@
 - SIFT 파라미터(nfeatures) 조정을 통한 특징점 개수 제한 기능 제공
 
 #### 결과 이미지
+![Image](https://github.com/user-attachments/assets/b10fdcd4-00ff-408b-a961-8d40fbf3da8a)
+![Image](https://github.com/user-attachments/assets/9e9fa418-a40f-41e8-8005-932b3d30fe49)
 
 
 #### 전체 코드
@@ -136,6 +138,7 @@ if __name__ == "__main__":
    - KNN 매칭과 ratio test를 통한 매칭 품질 향상
 
 #### 결과 이미지
+![Image](https://github.com/user-attachments/assets/45084936-c904-4feb-8055-7685087c36a6)
 
 
 #### 전체 코드
@@ -265,7 +268,7 @@ SIFT 특징점 매칭을 기반으로 두 이미지 간의 호모그래피를 �
 5. 변환된 이미지와 두 번째 이미지를 합성하여 정합 결과 확인
 
 #### 결과 이미지
-
+![Image](https://github.com/user-attachments/assets/99d073d4-4f43-417b-9d07-d8420e0b0fa1)
 
 #### 전체 코드
 ```python
