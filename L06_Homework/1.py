@@ -65,13 +65,13 @@ def main():
     
     # 첫 번째 subplot에 모든 특징점 이미지 출력
     plt.subplot(1, 2, 1)
-    plt.title('All SIFT Keypoints')
+    plt.title('SIFT Keypoints Keypoints')
     plt.imshow(img_keypoints_rgb)
     plt.axis('off')
     
     # 두 번째 subplot에 제한된 특징점 이미지 출력
     plt.subplot(1, 2, 2)
-    plt.title('Limited SIFT Keypoints')
+    plt.title('Limited SIFT Keypoints(n = 100)')
     plt.imshow(img_keypoints_limited_rgb)
     plt.axis('off')
     
