@@ -24,6 +24,9 @@
 #### 결과 이미지
 ![Image](https://github.com/user-attachments/assets/b10fdcd4-00ff-408b-a961-8d40fbf3da8a)
 ![Image](https://github.com/user-attachments/assets/9e9fa418-a40f-41e8-8005-932b3d30fe49)
+![Image](https://github.com/user-attachments/assets/396f3c11-fb2a-4cf7-a77b-9fa37f93a2c8)
+
+
 
 
 #### 전체 코드
@@ -139,6 +142,7 @@ if __name__ == "__main__":
 
 #### 결과 이미지
 ![Image](https://github.com/user-attachments/assets/45084936-c904-4feb-8055-7685087c36a6)
+![Image](https://github.com/user-attachments/assets/0966567b-e032-4397-b080-7bd569db5edf)
 
 
 #### 전체 코드
@@ -269,7 +273,7 @@ SIFT 특징점 매칭을 기반으로 두 이미지 간의 호모그래피를 �
 
 #### 결과 이미지
 ![Image](https://github.com/user-attachments/assets/99d073d4-4f43-417b-9d07-d8420e0b0fa1)
-
+![Image](https://github.com/user-attachments/assets/728509b8-b5c5-4ec5-bab1-75f904d5181e)
 #### 전체 코드
 ```python
 import cv2 as cv 
