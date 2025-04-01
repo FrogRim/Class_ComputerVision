@@ -82,12 +82,12 @@ def main():
     plt.figure(figsize=(16, 8))
     
     plt.subplot(2, 1, 1)
-    plt.title('BFMatcher로 매칭 (상위 50개)')
+    plt.title('Match : BFMatcher')
     plt.imshow(img_matches_bf_rgb)
     plt.axis('off')
     
     plt.subplot(2, 1, 2)
-    plt.title('FLANN + Ratio Test로 매칭')
+    plt.title('Match : FLANN + Ratio Test')
     plt.imshow(img_matches_flann_rgb)
     plt.axis('off')
     
@@ -134,7 +134,7 @@ def main():
     improved_matches = draw_matches_with_info(img1, kp1, img2, kp2, good_knn_matches[:30])
     
     plt.figure(figsize=(16, 8))
-    plt.title('개선된 매칭 시각화 (FLANN + Ratio Test, 상위 30개)')
+    plt.title('Improved Match : (FLANN + Ratio Test, top 30)')
     plt.imshow(improved_matches)
     plt.axis('off')
     plt.tight_layout()

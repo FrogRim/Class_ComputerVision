@@ -26,8 +26,8 @@ def main():
     print(f"첫 번째 이미지 특징점 개수: {len(kp1)}")
     print(f"두 번째 이미지 특징점 개수: {len(kp2)}")
     
-    # FLANN 기반 매처 설정 (Fast Library for Approximate Nearest Neighbors)
-    flann = cv.FlannBasedMatcher_create(cv.FlannBasedMatcher_FLANNBASED)
+    # FLANN 기반 매처 설정
+    flann = cv.FlannBasedMatcher()
     
     # knnMatch를 사용하여 각 특징점마다 가장 가까운 2개의 매칭점 찾기
     knn_matches = flann.knnMatch(des1, des2, 2)  # k=2: 각 특징점에 대해 상위 2개 매칭

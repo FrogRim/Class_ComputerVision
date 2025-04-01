@@ -36,13 +36,13 @@ def main():
     
     # 1행 2열, 첫 번째 subplot에 원본 이미지 출력
     plt.subplot(1, 2, 1)
-    plt.title('원본 이미지')
+    plt.title('Original Image')
     plt.imshow(img_rgb)
     plt.axis('off')  # 축 눈금 제거
     
     # 1행 2열, 두 번째 subplot에 특징점 이미지 출력
     plt.subplot(1, 2, 2)
-    plt.title('SIFT 특징점')
+    plt.title('SIFT Keypoints Image')
     plt.imshow(img_keypoints_rgb)
     plt.axis('off')
     
@@ -63,15 +63,15 @@ def main():
     # 원본 특징점과 제한된 특징점 비교
     plt.figure(figsize=(12, 6))
     
-    # 1행 2열, 첫 번째 subplot에 모든 특징점 이미지 출력
+    # 첫 번째 subplot에 모든 특징점 이미지 출력
     plt.subplot(1, 2, 1)
-    plt.title('모든 SIFT 특징점')
+    plt.title('All SIFT Keypoints')
     plt.imshow(img_keypoints_rgb)
     plt.axis('off')
     
-    # 1행 2열, 두 번째 subplot에 제한된 특징점 이미지 출력
+    # 두 번째 subplot에 제한된 특징점 이미지 출력
     plt.subplot(1, 2, 2)
-    plt.title('제한된 SIFT 특징점 (최대 100개)')
+    plt.title('Limited SIFT Keypoints')
     plt.imshow(img_keypoints_limited_rgb)
     plt.axis('off')
     
