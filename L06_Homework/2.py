@@ -13,15 +13,15 @@ def main():
         return
     
     # 그레이스케일 변환 (특징점 검출용)
-    gray1 = cv.cvtColor(img1, cv.COLOR_BGR2GRAY)  # 첫 번째 이미지 그레이스케일 변환
-    gray2 = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)  # 두 번째 이미지 그레이스케일 변환
+    gray1 = cv.cvtColor(img1, cv.COLOR_BGR2GRAY)  
+    gray2 = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)  
     
     # SIFT 객체 생성
     sift = cv.SIFT_create()  # 기본 파라미터로 SIFT 객체 생성
     
     # 각 이미지에서 특징점과 설명자 추출
-    kp1, des1 = sift.detectAndCompute(gray1, None)  # 첫 번째 이미지 특징점 및 설명자
-    kp2, des2 = sift.detectAndCompute(gray2, None)  # 두 번째 이미지 특징점 및 설명자
+    kp1, des1 = sift.detectAndCompute(gray1, None)  
+    kp2, des2 = sift.detectAndCompute(gray2, None) 
     
     print(f"첫 번째 이미지 특징점 개수: {len(kp1)}")
     print(f"두 번째 이미지 특징점 개수: {len(kp2)}")
