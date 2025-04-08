@@ -1,183 +1,84 @@
-import torch
-import torch.nn as nn
-import torch.optim as optim
-from torchvision import datasets, transforms
+import torch, torchvision
+from torch import nn
 from torch.utils.data import DataLoader, random_split
+from torchvision import datasets, transforms
+from torch.optim import Adam
 import matplotlib.pyplot as plt
 
-# 데이터 전처리 및 로드
 transform_train = transforms.Compose([
     transforms.RandomCrop(32, padding=4),
     transforms.RandomHorizontalFlip(),
     transforms.RandomRotation(15),
     transforms.ToTensor(),
-    transforms.Normalize((0.5071, 0.4867, 0.4408),
-                         (0.2675, 0.2565, 0.2761))
+    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
 ])
-
 transform_test = transforms.Compose([
     transforms.ToTensor(),
-    transforms.Normalize((0.5071, 0.4867, 0.4408),
-                         (0.2675, 0.2565, 0.2761))
+    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
 ])
 
-# CIFAR100 데이터셋 로드
-train_dataset = datasets.CIFAR10(
-    root='./data', train=True, download=True, transform=transform_train)
-test_dataset = datasets.CIFAR10(
-    root='./data', train=False, download=True, transform=transform_test)
+full_train = datasets.CIFAR10('./data', train=True, download=True, transform=transform_train)
+test_ds = datasets.CIFAR10('./data', train=False, download=True, transform=transform_test)
+train_size = int(len(full_train) * 0.8)
+val_size = len(full_train) - train_size
+train_ds, val_ds = random_split(full_train, [train_size, val_size])
 
-# 훈련 데이터를 훈련 세트와 검증 세트로 분할 (80% 훈련, 20% 검증)
-train_size = int(0.8 * len(train_dataset))
-val_size = len(train_dataset) - train_size
-train_set, val_set = random_split(train_dataset, [train_size, val_size])
+train_loader = DataLoader(train_ds, batch_size=128, shuffle=True)
+val_loader = DataLoader(val_ds, batch_size=128)
+test_loader = DataLoader(test_ds, batch_size=128)
 
-# 데이터 로더 설정
-batch_size = 256
-train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, drop_last = True)
-val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False)
-test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
-
-# 손실 및 정확도 기록을 위한 리스트 초기화
-train_losses = []
-train_accuracies = []
-val_losses = []
-val_accuracies = []
-
-# 모델 정의
 class CNNModel(nn.Module):
     def __init__(self):
-        super(CNNModel, self).__init__()
-        # 첫 번째 컨볼루션 블록
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=3, padding=1)
-        self.bn1 = nn.BatchNorm2d(64)
-        self.conv2 = nn.Conv2d(64, 64, kernel_size=3, padding=1)
-        self.bn2 = nn.BatchNorm2d(64)
-        # 두 번째 컨볼루션 블록
-        self.conv3 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
-        self.bn3 = nn.BatchNorm2d(128)
-        self.conv4 = nn.Conv2d(128, 128, kernel_size=3, padding=1)
-        self.bn4 = nn.BatchNorm2d(128)
-        # 세 번째 컨볼루션 블록
-        self.conv5 = nn.Conv2d(128, 256, kernel_size=3, padding=1)
-        self.bn5 = nn.BatchNorm2d(256)
-        self.conv6 = nn.Conv2d(256, 256, kernel_size=3, padding=1)
-        self.bn6 = nn.BatchNorm2d(256)
-        
-        # 풀링과 드롭아웃
-        self.pool = nn.MaxPool2d(2, 2)
-        self.dropout = nn.Dropout(0.3)
-        
-        # 전결합 레이어
-        self.fc1 = nn.Linear(256 * 4 * 4, 256)
-        self.fc_bn1 = nn.BatchNorm1d(256)
-        self.fc2 = nn.Linear(256, 100)
-
+        super().__init__()
+        self.conv = nn.Sequential(
+            nn.Conv2d(3, 64, 3, padding=1), nn.BatchNorm2d(64), nn.ReLU(),
+            nn.Conv2d(64, 64, 3, padding=1), nn.BatchNorm2d(64), nn.ReLU(),
+            nn.MaxPool2d(2), nn.Dropout(0.3),
+            nn.Conv2d(64, 128, 3, padding=1), nn.BatchNorm2d(128), nn.ReLU(),
+            nn.Conv2d(128, 128, 3, padding=1), nn.BatchNorm2d(128), nn.ReLU(),
+            nn.MaxPool2d(2), nn.Dropout(0.3),
+            nn.Conv2d(128, 256, 3, padding=1), nn.BatchNorm2d(256), nn.ReLU(),
+            nn.Conv2d(256, 256, 3, padding=1), nn.BatchNorm2d(256), nn.ReLU(),
+            nn.MaxPool2d(2), nn.Dropout(0.3)
+        )
+        self.fc = nn.Sequential(
+            nn.Linear(256*4*4, 256), nn.BatchNorm1d(256), nn.ReLU(), nn.Dropout(0.3),
+            nn.Linear(256, 10)
+        )
     def forward(self, x):
-        x = nn.functional.relu(self.bn1(self.conv1(x)))
-        x = nn.functional.relu(self.bn2(self.conv2(x)))
-        x = self.pool(x)
-        x = self.dropout(x)
+        x = self.conv(x)
+        x = x.view(x.size(0), -1)
+        return self.fc(x)
 
-        x = nn.functional.relu(self.bn3(self.conv3(x)))
-        x = nn.functional.relu(self.bn4(self.conv4(x)))
-        x = self.pool(x)
-        x = self.dropout(x)
-
-        x = nn.functional.relu(self.bn5(self.conv5(x)))
-        x = nn.functional.relu(self.bn6(self.conv6(x)))
-        x = self.pool(x)
-        x = self.dropout(x)
-
-        x = x.view(-1, 256 * 4 * 4)
-        x = nn.functional.relu(self.fc_bn1(self.fc1(x)))
-        x = self.dropout(x)
-        x = self.fc2(x)
-        return x
-
-# 모델 인스턴스 생성
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = CNNModel().to(device)
-
-# 손실 함수 및 옵티마이저 정의
+model = CNNModel().to(torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.002)
+optimizer = Adam(model.parameters(), lr=2e-3)
 
-# 학습 함수 정의
-def train(model, loader, criterion, optimizer):
-    model.train()
-    running_loss = 0.0
-    correct = 0
-    total = 0
-    for inputs, labels in loader:
-        inputs, labels = inputs.to(device), labels.to(device)
-        optimizer.zero_grad()
+def run_epoch(loader, train=True):
+    model.train() if train else model.eval()
+    loss, correct = 0, 0
+    with torch.set_grad_enabled(train):
+        for x, y in loader:
+            x, y = x.to(model.fc[0].weight.device), y.to(model.fc[0].weight.device)
+            if train: optimizer.zero_grad()
+            out = model(x)
+            l = criterion(out, y)
+            if train:
+                l.backward()
+                optimizer.step()
+            loss += l.item() * x.size(0)
+            correct += (out.argmax(1) == y).sum().item()
+    return loss / len(loader.dataset), correct / len(loader.dataset)
 
-        outputs = model(inputs)
-        loss = criterion(outputs, labels)
-        loss.backward()
-        optimizer.step()
+best_acc, best_model = 0, None
+for epoch in range(20):
+    _, tr_acc = run_epoch(train_loader, True)
+    _, val_acc = run_epoch(val_loader, False)
+    if val_acc > best_acc:
+        best_acc = val_acc
+        best_model = model.state_dict()
+    print(f"Epoch {epoch+1:02d} | Train {tr_acc:.3f} | Val {val_acc:.3f}")
 
-        # 통계 계산
-        running_loss += loss.item() * inputs.size(0)
-        _, predicted = outputs.max(1)
-        total += labels.size(0)
-        correct += predicted.eq(labels).sum().item()
-    epoch_loss = running_loss / total
-    epoch_acc = correct / total
-    train_losses.append(epoch_loss)
-    train_accuracies.append(epoch_acc)
-    return epoch_loss, epoch_acc
-
-# 검증 함수 정의
-def evaluate(model, loader, criterion):
-    model.eval()
-    running_loss = 0.0
-    correct = 0
-    total = 0
-    with torch.no_grad():
-        for inputs, labels in loader:
-            inputs, labels = inputs.to(device), labels.to(device)
-
-            outputs = model(inputs)
-            loss = criterion(outputs, labels)
-
-            running_loss += loss.item() * inputs.size(0)
-            _, predicted = outputs.max(1)
-            total += labels.size(0)
-            correct += predicted.eq(labels).sum().item()
-    epoch_loss = running_loss / total
-    epoch_acc = correct / total
-    
-    val_losses.append(epoch_loss)
-    val_accuracies.append(epoch_acc)
-    return epoch_loss, epoch_acc
-
-# 학습 및 검증
-num_epochs = 200
-best_val_acc = 0.0
-patience = 10
-trigger_times = 0
-
-for epoch in range(num_epochs):
-    train_loss, train_acc = train(model, train_loader, criterion, optimizer)
-    val_loss, val_acc = evaluate(model, val_loader, criterion)
-
-    print(f"Epoch [{epoch+1}/{num_epochs}] "
-          f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc*100:.2f}% "
-          f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc*100:.2f}%")
-
-    # 조기 종료 적용
-    if val_acc > best_val_acc:
-        best_val_acc = val_acc
-        trigger_times = 0
-        # 모델 저장 등 추가 작업 가능
-    else:
-        trigger_times += 1
-        if trigger_times >= patience:
-            print('Early stopping!')
-            break
-
-# 테스트 데이터로 모델 평가
-test_loss, test_acc = evaluate(model, test_loader, criterion)
-print(f"테스트 정확도: {test_acc * 100:.2f}%")
+model.load_state_dict(best_model)
+_, test_acc = run_epoch(test_loader, False)
+print(f"최종 Test Accuracy: {test_acc:.3f}")
