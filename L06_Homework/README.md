@@ -1,7 +1,5 @@
 # Computer Vision - L06 Homework
 
-## 개요
-이 디렉터리는 컴퓨터 비전 수업의 레슨 06 (Local Features) 숙제 솔루션을 포함하고 있습니다. 본 과제는 SIFT(Scale-Invariant Feature Transform) 알고리즘을 사용하여 이미지 특징점 검출, 매칭 및 호모그래피를 활용한 이미지 정합과 관련된 내용을 다룹니다.
 
 ## 파일 구조
 - `1.py`: SIFT 특징점 검출 및 시각화
@@ -24,7 +22,12 @@
 - SIFT 파라미터(nfeatures) 조정을 통한 특징점 개수 제한 기능 제공
 
 #### 결과 이미지
-[여기에 특징점 검출 결과 이미지 삽입]
+![Image](https://github.com/user-attachments/assets/b10fdcd4-00ff-408b-a961-8d40fbf3da8a)
+![Image](https://github.com/user-attachments/assets/9e9fa418-a40f-41e8-8005-932b3d30fe49)
+![Image](https://github.com/user-attachments/assets/396f3c11-fb2a-4cf7-a77b-9fa37f93a2c8)
+
+
+
 
 #### 전체 코드
 ```python
@@ -66,13 +69,13 @@ def main():
     
     # 1행 2열, 첫 번째 subplot에 원본 이미지 출력
     plt.subplot(1, 2, 1)
-    plt.title('원본 이미지')
+    plt.title('Original Image')
     plt.imshow(img_rgb)
     plt.axis('off')  # 축 눈금 제거
     
     # 1행 2열, 두 번째 subplot에 특징점 이미지 출력
     plt.subplot(1, 2, 2)
-    plt.title('SIFT 특징점')
+    plt.title('SIFT Keypoints Image')
     plt.imshow(img_keypoints_rgb)
     plt.axis('off')
     
@@ -93,15 +96,15 @@ def main():
     # 원본 특징점과 제한된 특징점 비교
     plt.figure(figsize=(12, 6))
     
-    # 1행 2열, 첫 번째 subplot에 모든 특징점 이미지 출력
+    # 첫 번째 subplot에 모든 특징점 이미지 출력
     plt.subplot(1, 2, 1)
-    plt.title('모든 SIFT 특징점')
+    plt.title('SIFT Keypoints Keypoints')
     plt.imshow(img_keypoints_rgb)
     plt.axis('off')
     
-    # 1행 2열, 두 번째 subplot에 제한된 특징점 이미지 출력
+    # 두 번째 subplot에 제한된 특징점 이미지 출력
     plt.subplot(1, 2, 2)
-    plt.title('제한된 SIFT 특징점 (최대 100개)')
+    plt.title('Limited SIFT Keypoints(n = 100)')
     plt.imshow(img_keypoints_limited_rgb)
     plt.axis('off')
     
@@ -114,6 +117,8 @@ if __name__ == "__main__":
     main()
 
 ```
+### 결과 이미지에서 생성되는 원의 크기가 다른 이유는?
+- SIFT는 다양한 크기의 Scale에서 특징점을 검출하기때문에 각 특징점마다 가지고 있는 Scale 크기는 모두 다르기에 원의 크기가 모두 다르게 출력됩니다.
 
 
 ### 2. SIFT 특징점 매칭 (2.py)
@@ -138,7 +143,9 @@ if __name__ == "__main__":
    - KNN 매칭과 ratio test를 통한 매칭 품질 향상
 
 #### 결과 이미지
-[여기에 특징점 매칭 결과 이미지 삽입]
+![Image](https://github.com/user-attachments/assets/45084936-c904-4feb-8055-7685087c36a6)
+![Image](https://github.com/user-attachments/assets/0966567b-e032-4397-b080-7bd569db5edf)
+
 
 #### 전체 코드
 ```python
@@ -157,15 +164,15 @@ def main():
         return
     
     # 그레이스케일 변환 (특징점 검출용)
-    gray1 = cv.cvtColor(img1, cv.COLOR_BGR2GRAY)  # 첫 번째 이미지 그레이스케일 변환
-    gray2 = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)  # 두 번째 이미지 그레이스케일 변환
+    gray1 = cv.cvtColor(img1, cv.COLOR_BGR2GRAY)  
+    gray2 = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)  
     
     # SIFT 객체 생성
     sift = cv.SIFT_create()  # 기본 파라미터로 SIFT 객체 생성
     
     # 각 이미지에서 특징점과 설명자 추출
-    kp1, des1 = sift.detectAndCompute(gray1, None)  # 첫 번째 이미지 특징점 및 설명자
-    kp2, des2 = sift.detectAndCompute(gray2, None)  # 두 번째 이미지 특징점 및 설명자
+    kp1, des1 = sift.detectAndCompute(gray1, None)  
+    kp2, des2 = sift.detectAndCompute(gray2, None) 
     
     print(f"첫 번째 이미지 특징점 개수: {len(kp1)}")
     print(f"두 번째 이미지 특징점 개수: {len(kp2)}")
@@ -226,64 +233,18 @@ def main():
     plt.figure(figsize=(16, 8))
     
     plt.subplot(2, 1, 1)
-    plt.title('BFMatcher로 매칭 (상위 50개)')
+    plt.title('Match : BFMatcher')
     plt.imshow(img_matches_bf_rgb)
     plt.axis('off')
     
     plt.subplot(2, 1, 2)
-    plt.title('FLANN + Ratio Test로 매칭')
+    plt.title('Match : FLANN + Ratio Test')
     plt.imshow(img_matches_flann_rgb)
     plt.axis('off')
     
     plt.tight_layout()
     plt.show()
     
-    #---------------------------------------------------------------------
-    # 개선된 매칭 결과 시각화 (더 많은 정보 표시)
-    #---------------------------------------------------------------------
-    
-    # 두 이미지를 나란히 배치하고 매칭 라인 그리기 위한 사용자 정의 함수
-    def draw_matches_with_info(img1, kp1, img2, kp2, matches):
-        # 이미지 크기 가져오기
-        h1, w1 = img1.shape[:2]  # 첫 번째 이미지 높이, 너비
-        h2, w2 = img2.shape[:2]  # 두 번째 이미지 높이, 너비
-        
-        # 결과 이미지 생성 (두 이미지를 나란히 배치할 빈 캔버스)
-        combined_height = max(h1, h2)  # 두 이미지 중 더 큰 높이 사용
-        result = np.zeros((combined_height, w1 + w2, 3), dtype=np.uint8)  # 검은색 배경
-        
-        # 두 이미지 복사
-        result[:h1, :w1] = img1  # 왼쪽에 첫 번째 이미지 배치
-        result[:h2, w1:w1+w2] = img2  # 오른쪽에 두 번째 이미지 배치
-        
-        # BGR에서 RGB로 변환 (matplotlib 표시용)
-        result_rgb = cv.cvtColor(result, cv.COLOR_BGR2RGB)
-        
-        # 매칭 라인 그리기
-        for match in matches:
-            # 첫 번째 이미지의 키포인트 위치
-            pt1 = tuple(map(int, kp1[match.queryIdx].pt))
-            # 두 번째 이미지의 키포인트 위치 (x 좌표에 첫 번째 이미지 너비 추가)
-            pt2 = (int(kp2[match.trainIdx].pt[0] + w1), int(kp2[match.trainIdx].pt[1]))
-            
-            # 매칭 라인 그리기 (파란색)
-            cv.line(result_rgb, pt1, pt2, (255, 0, 0), 1)
-            # 키포인트 표시 (초록색 원)
-            cv.circle(result_rgb, pt1, 5, (0, 255, 0), 2)
-            cv.circle(result_rgb, pt2, 5, (0, 255, 0), 2)
-            
-        return result_rgb
-    
-    # 개선된 매칭 시각화 (상위 30개 매칭만 표시)
-    improved_matches = draw_matches_with_info(img1, kp1, img2, kp2, good_knn_matches[:30])
-    
-    plt.figure(figsize=(16, 8))
-    plt.title('개선된 매칭 시각화 (FLANN + Ratio Test, 상위 30개)')
-    plt.imshow(improved_matches)
-    plt.axis('off')
-    plt.tight_layout()
-    plt.show()
-
 
 # 스크립트가 직접 실행될 때만 main() 함수 호출
 if __name__ == "__main__":
@@ -313,8 +274,8 @@ SIFT 특징점 매칭을 기반으로 두 이미지 간의 호모그래피를 �
 5. 변환된 이미지와 두 번째 이미지를 합성하여 정합 결과 확인
 
 #### 결과 이미지
-[여기에 호모그래피 변환 및 정합 결과 이미지 삽입]
-
+![Image](https://github.com/user-attachments/assets/99d073d4-4f43-417b-9d07-d8420e0b0fa1)
+![Image](https://github.com/user-attachments/assets/728509b8-b5c5-4ec5-bab1-75f904d5181e)
 #### 전체 코드
 ```python
 import cv2 as cv 
@@ -345,11 +306,14 @@ def main():
     print(f"첫 번째 이미지 특징점 개수: {len(kp1)}")
     print(f"두 번째 이미지 특징점 개수: {len(kp2)}")
     
-    # FLANN 기반 매처 설정 (Fast Library for Approximate Nearest Neighbors)
-    flann = cv.FlannBasedMatcher_create(cv.FlannBasedMatcher_FLANNBASED)
+    # bf 기반 매처 설정
+    bf = cv.BFMatcher(cv.NORM_L2, crossCheck=False)  # crossCheck=False: 양방향 매칭 비활성화
+    
+    # 매칭 수행 (모든 특징점 간 매칭)
+    matches = bf.match(des1, des2)
     
     # knnMatch를 사용하여 각 특징점마다 가장 가까운 2개의 매칭점 찾기
-    knn_matches = flann.knnMatch(des1, des2, 2)  # k=2: 각 특징점에 대해 상위 2개 매칭
+    knn_matches = bf.knnMatch(des1, des2, 2)  # k=2: 각 특징점에 대해 상위 2개 매칭
     
     # Lowe의 ratio test를 적용하여 좋은 매치 선택
     # 첫 번째 매치가 두 번째 매치보다 충분히 좋은 경우만 선택
@@ -427,37 +391,13 @@ def main():
     plt.tight_layout()
     plt.show()
     
-    #---------------------------------------------------------------------
-    # 추가: 대체 시각화 방법 (색상으로 구분)
-    #---------------------------------------------------------------------
     
-    # 원본 컬러 채널 유지를 위해 다른 방식으로 시각화
-    result = img2.copy()
-    
-    # 변환된 이미지의 마스크 생성 (검은색 부분 제외)
-    # 변환된 이미지에서 실제 콘텐츠가 있는 부분만 마스크로 생성
-    gray_warped = cv.cvtColor(warped_img, cv.COLOR_BGR2GRAY)
-    _, mask = cv.threshold(gray_warped, 1, 255, cv.THRESH_BINARY)  # 임계값 1 이상인 부분만 255로 설정
-    
-    # 마스크를 사용하여 원본 이미지 일부 영역을 빨간색으로 변경
-    red_region = np.zeros_like(img2)  # 두 번째 이미지와 같은 크기의 검은 이미지
-    red_region[:,:,2] = mask  # 빨간색 채널에 마스크 적용 (B=0, G=0, R=mask)
-    
-    # 두 이미지 합성
-    result = cv.addWeighted(result, 1.0, red_region, 0.5, 0.0)  # 원본 + 빨간 마스크
-    
-    # 결과 시각화
-    plt.figure(figsize=(10, 8))
-    plt.title('Alignment Result (Red: Warped Image Region)')
-    plt.imshow(cv.cvtColor(result, cv.COLOR_BGR2RGB))
-    plt.axis('off')
-    plt.tight_layout()
-    plt.show()
 
 
 # 스크립트가 직접 실행될 때만 main() 함수 호출
 if __name__ == "__main__":
     main()
+
 
 ```
 
