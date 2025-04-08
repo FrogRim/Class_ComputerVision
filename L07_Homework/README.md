@@ -22,7 +22,9 @@ Epoch 5: Train acc 0.9781 | Test acc 0.9645
 ```
 
 ### 🖼️ 결과 이미지
-![MNIST Result](./image_task1.png)
+![Image](https://github.com/user-attachments/assets/d4bc3097-f117-4857-bbfa-abc2dfb69165)
+
+
 
 ### 🧾 코드 전문 (Python Script)
 ```python
@@ -102,7 +104,9 @@ for epoch in range(5):
 ```
 
 ### 🖼️ 결과 이미지
-![CIFAR-10 CNN Result](./image_task2.png)
+![Image](https://github.com/user-attachments/assets/6cce4f84-eaea-4cad-8d35-0a1be8712287)
+
+
 
 ### 🧾 코드 전문 (Python Script)
 ```python
@@ -214,7 +218,7 @@ print(f"최종 Test Accuracy: {test_acc:.3f}")
 ```
 
 ### 🖼️ 결과 이미지
-![VGG16 Result](./image_task3.png)
+![Image](https://github.com/user-attachments/assets/82754488-9aa0-4a3b-a621-fb6a23a83233)
 
 ### 🧾 코드 전문 (Python Script)
 ```python
