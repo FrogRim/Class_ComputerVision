@@ -26,11 +26,14 @@ def main():
     print(f"첫 번째 이미지 특징점 개수: {len(kp1)}")
     print(f"두 번째 이미지 특징점 개수: {len(kp2)}")
     
-    # FLANN 기반 매처 설정 (Fast Library for Approximate Nearest Neighbors)
-    flann = cv.FlannBasedMatcher_create(cv.FlannBasedMatcher_FLANNBASED)
+    # bf 기반 매처 설정
+    bf = cv.BFMatcher(cv.NORM_L2, crossCheck=False)  # crossCheck=False: 양방향 매칭 비활성화
+    
+    # 매칭 수행 (모든 특징점 간 매칭)
+    matches = bf.match(des1, des2)
     
     # knnMatch를 사용하여 각 특징점마다 가장 가까운 2개의 매칭점 찾기
-    knn_matches = flann.knnMatch(des1, des2, 2)  # k=2: 각 특징점에 대해 상위 2개 매칭
+    knn_matches = bf.knnMatch(des1, des2, 2)  # k=2: 각 특징점에 대해 상위 2개 매칭
     
     # Lowe의 ratio test를 적용하여 좋은 매치 선택
     # 첫 번째 매치가 두 번째 매치보다 충분히 좋은 경우만 선택
@@ -108,38 +111,10 @@ def main():
     plt.tight_layout()
     plt.show()
     
-<<<<<<< HEAD
-    #---------------------------------------------------------------------
-    # 추가: 대체 시각화 방법 (색상으로 구분)
-    #---------------------------------------------------------------------
     
-    # 원본 컬러 채널 유지를 위해 다른 방식으로 시각화
-    result = img2.copy()
-    
-    # 변환된 이미지의 마스크 생성 (검은색 부분 제외)
-    # 변환된 이미지에서 실제 콘텐츠가 있는 부분만 마스크로 생성
-    gray_warped = cv.cvtColor(warped_img, cv.COLOR_BGR2GRAY)
-    _, mask = cv.threshold(gray_warped, 1, 255, cv.THRESH_BINARY)  # 임계값 1 이상인 부분만 255로 설정
-    
-    # 마스크를 사용하여 원본 이미지 일부 영역을 빨간색으로 변경
-    red_region = np.zeros_like(img2)  # 두 번째 이미지와 같은 크기의 검은 이미지
-    red_region[:,:,2] = mask  # 빨간색 채널에 마스크 적용 (B=0, G=0, R=mask)
-    
-    # 두 이미지 합성
-    result = cv.addWeighted(result, 1.0, red_region, 0.5, 0.0)  # 원본 + 빨간 마스크
-    
-    # 결과 시각화
-    plt.figure(figsize=(10, 8))
-    plt.title('Alignment Result (Red: Warped Image Region)')
-    plt.imshow(cv.cvtColor(result, cv.COLOR_BGR2RGB))
-    plt.axis('off')
-    plt.tight_layout()
-    plt.show()
-=======
-    
->>>>>>> 6efb31f94750a73e0c16bec44a00b784ecfcf23b
 
 
 # 스크립트가 직접 실행될 때만 main() 함수 호출
 if __name__ == "__main__":
     main()
+
