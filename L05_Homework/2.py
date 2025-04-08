@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 이미지 불러오기
-image = cv.imread('../img/soccer.jpg')
+image = cv.imread('../img/DaboTower.jpg')
 
 # 이미지가 제대로 로드되었는지 확인
 if image is None:
@@ -17,7 +17,7 @@ gray_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
 canny = cv.Canny(gray_image,100,200)
 
 # 허프 변환을 사용하여 선 검출
-lines = cv.HoughLinesP(canny, 1, np.pi/180, threshold=50, minLineLength=50, maxLineGap=10)
+lines = cv.HoughLinesP(canny, 1, np.pi/180, threshold=80, minLineLength=50, maxLineGap=10)
 
 # 선을 그린 이미지 복사본 생성
 image_with_lines = image.copy()

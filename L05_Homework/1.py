@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 이미지 불러오기
-image = cv.imread('../img/soccer.jpg')
+image = cv.imread('../img/edgeDetectionImage.jpg')
 
 # 이미지가 제대로 로드되었는지 확인
 if image is None:
