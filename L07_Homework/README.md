@@ -1,6 +1,5 @@
-# Recognition Homework - README
+# Recognition Homework
 
----
 
 ## ✅ 과제 1: MNIST 분류기 (Fully Connected Network)
 
