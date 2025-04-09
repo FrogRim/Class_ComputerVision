@@ -11,7 +11,8 @@
 
 ### 💡 주요 구현 포인트
 - `torchvision.datasets.MNIST`로 데이터 로딩
-- 2개의 Hidden Layer로 구성된 Fully Connected 신경망
+- `FCModel` 클래스: 두 개의 은닉층을 포함한 신경망 구조 정의
+- `run()` 함수: 학습 및 테스트 루틴을 하나로 통합하여 코드 간결화
 - `nn.CrossEntropyLoss` + `Adam` 옵티마이저 사용
 - GPU 사용 가능 시 자동 전환
 
@@ -28,59 +29,72 @@ Epoch 5: Train acc 0.9781 | Test acc 0.9645
 
 ### 🧾 코드 전문 (Python Script)
 ```python
-import torch, torchvision
+import torch
+import torchvision
 from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from torch.optim import Adam
 
+# CUDA 장치 설정
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+# 데이터 전처리: 정규화 적용 (평균 0.5, 표준편차 0.5)
 transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.5,), (0.5,))
 ])
 
+# MNIST 데이터 로드
 train_ds = datasets.MNIST('./data', train=True, download=True, transform=transform)
 test_ds = datasets.MNIST('./data', train=False, download=True, transform=transform)
-
 train_loader = DataLoader(train_ds, batch_size=128, shuffle=True)
 test_loader = DataLoader(test_ds, batch_size=128)
 
+# 신경망 모델 정의
 class FCModel(nn.Module):
     def __init__(self):
         super().__init__()
         self.net = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(28*28, 512), nn.ReLU(),
+            nn.Flatten(),                          # 28x28 -> 784
+            nn.Linear(784, 512), nn.ReLU(),
             nn.Linear(512, 512), nn.ReLU(),
-            nn.Linear(512, 10)
+            nn.Linear(512, 10)                     # 10개의 숫자 클래스 출력
         )
-    def forward(self, x): return self.net(x)
 
+    def forward(self, x):
+        return self.net(x)
+
+# 모델, 손실 함수, 옵티마이저 초기화
 model = FCModel().to(device)
-optimizer = Adam(model.parameters(), lr=1e-3)
 criterion = nn.CrossEntropyLoss()
+optimizer = Adam(model.parameters(), lr=1e-3)
 
-def run(loader, train):
+# 학습 및 테스트 함수 정의
+def run(loader, train=True):
     model.train() if train else model.eval()
-    loss, correct = 0, 0
+    loss_sum, correct = 0.0, 0
+
     with torch.set_grad_enabled(train):
         for x, y in loader:
             x, y = x.to(device), y.to(device)
-            if train: optimizer.zero_grad()
-            out = model(x)
-            l = criterion(out, y)
             if train:
-                l.backward()
+                optimizer.zero_grad()
+            output = model(x)
+            loss = criterion(output, y)
+            if train:
+                loss.backward()
                 optimizer.step()
-            loss += l.item() * x.size(0)
-            correct += (out.argmax(1) == y).sum().item()
-    return loss / len(loader.dataset), correct / len(loader.dataset)
 
+            loss_sum += loss.item() * x.size(0)
+            correct += (output.argmax(1) == y).sum().item()
+
+    return loss_sum / len(loader.dataset), correct / len(loader.dataset)
+
+# 에폭 반복 학습 및 평가
 for epoch in range(5):
-    _, tr_acc = run(train_loader, True)
-    _, te_acc = run(test_loader, False)
+    tr_loss, tr_acc = run(train_loader, True)
+    te_loss, te_acc = run(test_loader, False)
     print(f"Epoch {epoch+1}: Train acc {tr_acc:.4f} | Test acc {te_acc:.4f}")
 ```
 
@@ -94,8 +108,9 @@ for epoch in range(5):
 - 모델 성능 평가 및 예측 시각화
 
 ### 💡 주요 구현 포인트
+- `CIFAR10` 데이터셋 사용 + 80:20 비율로 훈련/검증 분할
 - `Conv2D → BatchNorm → ReLU` 블록 3단 구성
-- `MaxPool + Dropout`으로 과적합 방지
+- `train()`과 `eval()` 함수로 `MaxPool + Dropout`으로 과적합 방지
 - 학습/검증 분할, Early Stopping 구현
 
 ### 📊 실행 결과
@@ -110,35 +125,38 @@ for epoch in range(5):
 
 ### 🧾 코드 전문 (Python Script)
 ```python
-import torch, torchvision
+import torch
 from torch import nn
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
 from torch.optim import Adam
-import matplotlib.pyplot as plt
 
+# 전처리 정의 (CIFAR10 통계 기반 정규화)
 transform_train = transforms.Compose([
     transforms.RandomCrop(32, padding=4),
     transforms.RandomHorizontalFlip(),
     transforms.RandomRotation(15),
     transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
+    transforms.Normalize((0.4914, 0.4822, 0.4465),
+                         (0.2023, 0.1994, 0.2010))
 ])
 transform_test = transforms.Compose([
     transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
+    transforms.Normalize((0.4914, 0.4822, 0.4465),
+                         (0.2023, 0.1994, 0.2010))
 ])
 
+# 데이터 로드 및 분할
 full_train = datasets.CIFAR10('./data', train=True, download=True, transform=transform_train)
 test_ds = datasets.CIFAR10('./data', train=False, download=True, transform=transform_test)
-train_size = int(len(full_train) * 0.8)
+train_size = int(0.8 * len(full_train))
 val_size = len(full_train) - train_size
 train_ds, val_ds = random_split(full_train, [train_size, val_size])
-
 train_loader = DataLoader(train_ds, batch_size=128, shuffle=True)
 val_loader = DataLoader(val_ds, batch_size=128)
 test_loader = DataLoader(test_ds, batch_size=128)
 
+# CNN 모델 정의
 class CNNModel(nn.Module):
     def __init__(self):
         super().__init__()
@@ -146,42 +164,49 @@ class CNNModel(nn.Module):
             nn.Conv2d(3, 64, 3, padding=1), nn.BatchNorm2d(64), nn.ReLU(),
             nn.Conv2d(64, 64, 3, padding=1), nn.BatchNorm2d(64), nn.ReLU(),
             nn.MaxPool2d(2), nn.Dropout(0.3),
+
             nn.Conv2d(64, 128, 3, padding=1), nn.BatchNorm2d(128), nn.ReLU(),
             nn.Conv2d(128, 128, 3, padding=1), nn.BatchNorm2d(128), nn.ReLU(),
             nn.MaxPool2d(2), nn.Dropout(0.3),
+
             nn.Conv2d(128, 256, 3, padding=1), nn.BatchNorm2d(256), nn.ReLU(),
             nn.Conv2d(256, 256, 3, padding=1), nn.BatchNorm2d(256), nn.ReLU(),
             nn.MaxPool2d(2), nn.Dropout(0.3)
         )
         self.fc = nn.Sequential(
-            nn.Linear(256*4*4, 256), nn.BatchNorm1d(256), nn.ReLU(), nn.Dropout(0.3),
+            nn.Linear(256 * 4 * 4, 256), nn.BatchNorm1d(256), nn.ReLU(), nn.Dropout(0.3),
             nn.Linear(256, 10)
         )
+
     def forward(self, x):
         x = self.conv(x)
         x = x.view(x.size(0), -1)
         return self.fc(x)
 
-model = CNNModel().to(torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
+# 모델, 손실 함수, 옵티마이저
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model = CNNModel().to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = Adam(model.parameters(), lr=2e-3)
 
+# 학습/검증 루프 정의
 def run_epoch(loader, train=True):
     model.train() if train else model.eval()
-    loss, correct = 0, 0
+    loss_sum, correct = 0, 0
     with torch.set_grad_enabled(train):
         for x, y in loader:
-            x, y = x.to(model.fc[0].weight.device), y.to(model.fc[0].weight.device)
+            x, y = x.to(device), y.to(device)
             if train: optimizer.zero_grad()
             out = model(x)
-            l = criterion(out, y)
+            loss = criterion(out, y)
             if train:
-                l.backward()
+                loss.backward()
                 optimizer.step()
-            loss += l.item() * x.size(0)
+            loss_sum += loss.item() * x.size(0)
             correct += (out.argmax(1) == y).sum().item()
-    return loss / len(loader.dataset), correct / len(loader.dataset)
+    return loss_sum / len(loader.dataset), correct / len(loader.dataset)
 
+# 학습 수행
 best_acc, best_model = 0, None
 for epoch in range(20):
     _, tr_acc = run_epoch(train_loader, True)
@@ -207,7 +232,8 @@ print(f"최종 Test Accuracy: {test_acc:.3f}")
 - 기존 모델(CNN)과 비교
 
 ### 💡 주요 구현 포인트
-- `torchvision.models.vgg16(weights=...)` + `classifier[6]` 수정
+- `torchvision.models.vgg16(weights=...)`로 사전학습 된 VGG16모델을 로드 + 마지막 분류기 `classifier[6]` 수정
+- `VGG16` 특징 추출부는 freeze(가중치 고정)
 - CIFAR-10 → VGG 입력(224x224)로 resize & normalize
 - 기존 CNN (과제2) 대비 성능 향상 비교
 
@@ -229,42 +255,48 @@ from torchvision import datasets, transforms
 from torchvision.models import vgg16, VGG16_Weights
 from torch.optim import Adam
 
-transform = transforms.Compose([
+# CIFAR-10 -> VGG 입력 정규화 및 리사이즈
+tf = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
+    transforms.Normalize((0.4914, 0.4822, 0.4465),
+                         (0.2023, 0.1994, 0.2010))
 ])
 
-train_ds = datasets.CIFAR10('./data', train=True, download=True, transform=transform)
-test_ds = datasets.CIFAR10('./data', train=False, download=True, transform=transform)
+train_ds = datasets.CIFAR10('./data', train=True, download=True, transform=tf)
+test_ds  = datasets.CIFAR10('./data', train=False, download=True, transform=tf)
 train_loader = DataLoader(train_ds, batch_size=32, shuffle=True)
-test_loader = DataLoader(test_ds, batch_size=32)
+test_loader  = DataLoader(test_ds, batch_size=32)
 
+# VGG16 불러오기 및 classifier 수정
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 vgg = vgg16(weights=VGG16_Weights.DEFAULT)
-for p in vgg.features.parameters(): p.requires_grad = False
+for p in vgg.features.parameters():
+    p.requires_grad = False
 vgg.classifier[6] = nn.Linear(4096, 10)
 vgg = vgg.to(device)
 
-optimizer = Adam(vgg.classifier[6].parameters(), lr=1e-3)
 criterion = nn.CrossEntropyLoss()
+optimizer = Adam(vgg.classifier[6].parameters(), lr=1e-3)
 
+# 학습/테스트 루프 정의
 def run_epoch(loader, train=True):
     vgg.train() if train else vgg.eval()
-    loss, correct = 0, 0
+    loss_sum, correct = 0, 0
     with torch.set_grad_enabled(train):
         for x, y in loader:
             x, y = x.to(device), y.to(device)
             if train: optimizer.zero_grad()
             out = vgg(x)
-            l = criterion(out, y)
+            loss = criterion(out, y)
             if train:
-                l.backward()
+                loss.backward()
                 optimizer.step()
-            loss += l.item() * x.size(0)
+            loss_sum += loss.item() * x.size(0)
             correct += (out.argmax(1) == y).sum().item()
-    return loss / len(loader.dataset), correct / len(loader.dataset)
+    return loss_sum / len(loader.dataset), correct / len(loader.dataset)
 
+# 5 에폭 학습
 for epoch in range(5):
     _, tr_acc = run_epoch(train_loader, True)
     _, te_acc = run_epoch(test_loader, False)
