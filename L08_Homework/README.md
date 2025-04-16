@@ -10,7 +10,7 @@
 - **결과 시각화**: 검출된 객체의 경계 상자와 ID를 실시간으로 비디오 프레임에 표시합니다.
 
 ### 주요 함수 및 로직
-#### 1. `construct_yolo_v3()`
+#### 1. `construct_yolo_v4()`
 - **기능**: YOLOv4-tiny 모델을 초기화하고, 출력 레이어와 클래스 이름을 반환합니다.
 - **로직**:
   - `cv.dnn.readNet()`을 사용하여 YOLO 모델과 구성 파일을 로드합니다.
@@ -39,7 +39,7 @@ sys.path.append('C:\\Users\\user\\Class_ComputerVision\\L08_Homework\\sort')
 from sort import Sort
 
 # 사전 학습 모델을 읽어 YOLO 구성
-def construct_yolo_v3():
+def construct_yolo_v4():
     f = open('classes.txt', 'r')
     class_names = [line.strip() for line in f.readlines()]
     f.close()
@@ -76,7 +76,7 @@ def yolo_detect(img, yolo_model, out_layers):
 
     return objects
 
-model, out_layers, class_names = construct_yolo_v3()  # YOLO 모델 생성
+model, out_layers, class_names = construct_yolo_v4()  # YOLO 모델 생성
 colors = np.random.uniform(0, 255, size=(100, 3))  # 100개의 클래스 트랙 구분
 
 
