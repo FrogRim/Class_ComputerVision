@@ -112,6 +112,10 @@ while True:
 cap.release()
 cv.destroyAllWindows()
 ```
+### 결과 이미지
+![Image](https://github.com/user-attachments/assets/20990881-2176-4d0b-9e9b-a641131c0b05)
+
+
 ---
 
 ## 2. `2.py`: MediaPipe FaceMesh를 활용한 얼굴 랜드마크 검출
@@ -197,6 +201,8 @@ while True:
 cap.release()
 cv.destroyAllWindows()
 ```
+### 결과 이미지
+![Image](https://github.com/user-attachments/assets/3fe6b2b7-e871-4b29-af27-8d42e54d2a9c)
 ---
 
 ## 실행 방법
