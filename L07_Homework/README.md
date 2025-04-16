@@ -73,6 +73,7 @@ class FCModel(nn.Module):
 # CrossEntropyLoss는 다중 클래스 분류 문제에서 자주 사용되는 손실 함수로, 모델의 출력과 실제 레이블 간의 차이를 측정
 # 이 함수를 사용하기에에 모델의 마지막 레이어는 softmax()가 적용되지 않습니다.
 # 이유: nn.CrossEntropyLoss 함수 내부에서 log softmax를 적용하여 수치 안정성과 효율성을 확보하므로 별도의 softmax layer가 필요하지 않습니다.
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = FCModel().to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = Adam(model.parameters(), lr=1e-3)
