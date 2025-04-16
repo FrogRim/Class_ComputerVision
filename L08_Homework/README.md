@@ -113,7 +113,7 @@ cap.release()
 cv.destroyAllWindows()
 ```
 ### 결과 이미지
-![Image](https://github.com/user-attachments/assets/20990881-2176-4d0b-9e9b-a641131c0b05)
+![Image](https://github.com/user-attachments/assets/c068457d-7ac2-4d2d-b762-15d114f111c9)
 
 
 ---
